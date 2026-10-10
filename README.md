@@ -13,11 +13,11 @@ No npm install or build is needed for the classroom. Python downloads Pyodide fr
 
 GitHub Pages serves static files; it cannot run the AI backend. Deploy `server/` to a Node 22+ host, using `npm start` and setting the secret `OPENAI_API_KEY` in that host's secret settings. Do not commit, paste into frontend code, or send API keys in chat.
 
-Set `ALLOWED_ORIGIN=https://tactiko.github.io` (or the exact origin of a custom domain). Set `OPENAI_MODEL` to a model your API project can use. Set a daily request limit with `MAX_DAILY_REQUESTS` (default 200). API usage is billed to the owner's OpenAI project.
+Set `ALLOWED_ORIGIN=https://tactiko.github.io` (or the exact origin of a custom domain). The backend uses the saved Python Tutor agent (`OPENAI_AGENT_ID`), preserving its model, instructions, and tools. Run `npm install` in `server/` to install the OpenAI SDK. The API key must have access to the project containing that agent, with Agents read/write and Responses write permissions. Set a daily request limit with `MAX_DAILY_REQUESTS` (default 200). API usage is billed to the owner's OpenAI project.
 
 After deployment, set `tutorEndpoint` in `config.js` to the real `https://YOUR-HOST/api/chat`. Users then share the same connection. The connection field in the site can override it in the current browser for setup/testing; it never accepts an API key.
 
-The backend sends the question, lesson title, selected language, and up to six previous messages to OpenAI with `store:false`. It has no application database, and conversations remain in page memory. Hosting providers and OpenAI may have their own logging and retention policies. This is implementation documentation, not a published privacy policy.
+The backend sends the question, lesson title, selected language, and up to six previous messages to the saved OpenAI agent. Each request creates an OpenAI-hosted session. Completed sessions are deleted after extracting the answer; interrupted or failed sessions may need reconciliation using IDs in server logs. It has no application database, and conversations remain in page memory. Hosting providers and OpenAI may have their own logging and retention policies. This is implementation documentation, not a published privacy policy.
 
 ## Operational limits
 
@@ -34,3 +34,7 @@ Lessons include synthetic security logs and hashing, not real-world scanning. Th
 To serve the classroom locally: `python -m http.server 8000` from the repository root. To run the tutor server, set the environment variables securely and run `node server/server.mjs`.
 
 AI replies are not operational until a real backend and server-side key are configured. No fallback pretends to be AI.
+
+## Saved-agent status
+
+The saved-agent integration has been implemented and checked with simulated API events. A real agent call has not been verified: the backend still needs hosting and a server-side key with access to the agent project. No API error falls back to a different tutor. The configured model and hosted sandbox can incur usage charges. Requests allow up to three minutes; no automatic API retries are enabled.
