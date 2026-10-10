@@ -1,1 +1,14 @@
-{"name":"tactiko-python-tutor","private":true,"type":"module","scripts":{"start":"node server.mjs"},"engines":{"node":">=22"}}
+{
+  "name": "tactiko-python-tutor",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "openai": "^7.15.0"
+  }
+}
